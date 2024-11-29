@@ -23,7 +23,7 @@ interface InterServerEvents {}
 interface SocketData {}
 
 const MAIN_ROOM = "main room";
-const game = new GameOfLife(10, 10);
+let game = new GameOfLife(10, 10);
 const app = express();
 const server = http.createServer(app);
 const io = new Server<
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
     });
     socket.on("requestToggle", (x: number, y: number, alive: boolean) => {
         console.log(`requestToggle (${x}, ${y}) received.`);
-        game.toggle(x, y, alive);
+        game = game.toggle(x, y, alive);
         io.to(MAIN_ROOM).emit("toggleOnClient", x, y, game.getTileAt(x, y));
     });
 });

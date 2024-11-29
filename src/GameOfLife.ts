@@ -11,10 +11,14 @@ class GameOfLife {
      * @param n Amount of columns in this game.
      * @param m Amount of rows in this game.
      */
-    constructor(n: number, m: number) {
+    constructor(
+        n: number,
+        m: number,
+        board: boolean[] = Array<boolean>(n * m).fill(false)
+    ) {
         this.n = n;
         this.m = m;
-        this.board = Array<boolean>(n * m).fill(false);
+        this.board = board;
     }
 
     /**
@@ -22,10 +26,36 @@ class GameOfLife {
      * @return A copy of this game of life in its next game state.
      */
     nextState(): GameOfLife {
-        /**
-         * @todo Implement this method.
-         */
-        return this; // stub
+        const newBoard = Array<boolean>(this.n * this.m).fill(false);
+        for (let x = 0; x < this.n; x++) {
+            for (let y = 0; y < this.m; y++) {
+                const neighbors =
+                    +(x > 0 && y > 0 && this.board[x - 1 + (y - 1) * this.n]) +
+                    +(y > 0 && this.board[x + (y - 1) * this.n]) +
+                    +(
+                        x < this.n - 1 &&
+                        y > 0 &&
+                        this.board[x + 1 + (y - 1) * this.n]
+                    ) +
+                    +(x > 0 && this.board[x - 1 + y * this.n]) +
+                    +(x < this.n - 1 && this.board[x + 1 + y * this.n]) +
+                    +(
+                        x > 0 &&
+                        y < this.m - 1 &&
+                        this.board[x - 1 + (y + 1) * this.n]
+                    ) +
+                    +(y < this.m - 1 && this.board[x + (y + 1) * this.n]) +
+                    +(
+                        x < this.n - 1 &&
+                        y < this.m - 1 &&
+                        this.board[x + 1 + (y + 1) * this.n]
+                    );
+                newBoard[x + y * this.n] =
+                    (neighbors == 2 && this.board[x + y * this.n]) ||
+                    neighbors == 3;
+            }
+        }
+        return new GameOfLife(this.n, this.m, newBoard);
     }
 
     /**
@@ -36,10 +66,9 @@ class GameOfLife {
      * @return A copy of this game of life, with the given square toggled.
      */
     toggle(x: number, y: number, alive: boolean): GameOfLife {
-        /**
-         * @todo Implement this method.
-         */
-        return this; // stub
+        const newBoard = [...this.board];
+        newBoard[x + y * this.n] = alive;
+        return new GameOfLife(this.n, this.m, newBoard);
     }
 
     /**
