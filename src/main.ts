@@ -4,7 +4,7 @@ const express = require("express");
 const http = require("http");
 
 interface ServerToClientEvents {
-    toggleOnClient: (x: number, y: number) => void;
+    toggleOnClient: (x: number, y: number, alive: boolean) => void;
     refreshClient: (
         n: number,
         m: number,
@@ -14,7 +14,7 @@ interface ServerToClientEvents {
 }
 
 interface ClientToServerEvents {
-    requestToggle: (x: number, y: number) => void;
+    requestToggle: (x: number, y: number, alive: boolean) => void;
     requestRefresh: () => void;
 }
 
@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
     console.log("User connected!");
     socket.join(MAIN_ROOM);
     socket.on("requestRefresh", () => {
-        console.log(`requestRefresh received.`);
+        console.log("requestRefresh received.");
         socket.emit(
             "refreshClient",
             game.getWidth(),
@@ -51,9 +51,9 @@ io.on("connection", (socket) => {
             0
         );
     });
-    socket.on("requestToggle", (x: number, y: number) => {
+    socket.on("requestToggle", (x: number, y: number, alive: boolean) => {
         console.log(`requestToggle (${x}, ${y}) received.`);
-        game.toggle(x, y);
-        io.to(MAIN_ROOM).emit("toggleOnClient", x, y);
+        game.toggle(x, y, alive);
+        io.to(MAIN_ROOM).emit("toggleOnClient", x, y, game.getTileAt(x, y));
     });
 });

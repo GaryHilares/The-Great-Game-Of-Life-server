@@ -32,9 +32,10 @@ class GameOfLife {
      * @brief Creates a copy of this game with the given square toggled.
      * @param x The x-coordinate of the square to be toggled.
      * @param y The y-coordinate of the square to be toggled.
+     * @param alive True if the tile should be set to alive, or false if dead.
      * @return A copy of this game of life, with the given square toggled.
      */
-    toggle(x: number, y: number): GameOfLife {
+    toggle(x: number, y: number, alive: boolean): GameOfLife {
         /**
          * @todo Implement this method.
          */
