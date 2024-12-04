@@ -22,8 +22,10 @@ interface InterServerEvents {}
 
 interface SocketData {}
 
+const GENERATION_DELAY = 5;
 const MAIN_ROOM = "main room";
 let game = new GameOfLife(10, 10);
+let counter = GENERATION_DELAY;
 const app = express();
 const server = http.createServer(app);
 const io = new Server<
@@ -48,7 +50,7 @@ io.on("connection", (socket) => {
             game.getWidth(),
             game.getHeight(),
             game.getBoard(),
-            0
+            counter
         );
     });
     socket.on("requestToggle", (x: number, y: number, alive: boolean) => {
@@ -57,3 +59,11 @@ io.on("connection", (socket) => {
         io.to(MAIN_ROOM).emit("toggleOnClient", x, y, game.getTileAt(x, y));
     });
 });
+
+setInterval(() => {
+    counter -= 1;
+    if (counter <= 0) {
+        counter = GENERATION_DELAY;
+        game = game.nextState();
+    }
+}, 1000);
